@@ -1,0 +1,70 @@
+import kotlin.Boolean;
+
+CREATE TABLE Tag (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    cloudId TEXT DEFAULT NULL,
+    uuid TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    deleted INTEGER AS Boolean NOT NULL DEFAULT 0,
+    createdDate INTEGER NOT NULL,
+    editedDate INTEGER NOT NULL
+);
+
+CREATE INDEX tagUUID ON Tag(uuid);
+
+-- Select Queries
+
+getAllTags:
+SELECT * FROM Tag;
+
+getUndeletedTags:
+SELECT * FROM Tag WHERE deleted = 0 ORDER BY editedDate DESC;
+
+getTag:
+SELECT * FROM Tag WHERE uuid = ?;
+
+getTags:
+SELECT * FROM Tag WHERE uuid IN ?;
+
+-- Insert Queries
+
+insertTag:
+INSERT INTO Tag (
+    cloudId,
+    uuid,
+    title,
+    deleted,
+    createdDate,
+    editedDate
+) VALUES (?,?,?,?,?,?);
+
+-- Update Queries
+
+updateTag:
+UPDATE Tag SET
+cloudId = ?,
+title = ?,
+deleted = ?,
+createdDate = ?,
+editedDate = ?
+WHERE uuid = ?;
+
+updateTagTitle:
+UPDATE Tag SET
+title = ?,
+editedDate = ?
+WHERE uuid = ?;
+
+updateTagCloudId:
+UPDATE Tag SET cloudId = ? WHERE uuid = ?;
+
+removeTag:
+UPDATE Tag SET deleted = 1,editedDate = ? WHERE uuid = ?;
+
+removeTags:
+UPDATE Tag SET deleted = 1,editedDate = ? WHERE uuid IN ?;
+
+-- Delete Queries
+
+deleteTag:
+DELETE FROM Tag WHERE uuid = ?;
